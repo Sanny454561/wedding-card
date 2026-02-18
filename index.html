@@ -50,7 +50,156 @@
       border-radius:var(--radius); padding:16px;
     }
     .divider{ height:1px; background:var(--line); margin:14px 0; }
-    .btnrow{ display:flex; gap:10px; }
+    .btnrow{
+  display:flex;
+  gap:12px;
+  margin-top:6px;
+}
+
+/* ===== 갤러리: 3x3 바둑판(중앙축소) ===== */
+.galleryGrid{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap:10px;
+  padding:10px;
+  border-radius:16px;
+  background: rgba(17,24,39,.03);
+}
+
+.gthumb{
+  position:relative;
+  border-radius:14px;
+  overflow:hidden;
+  border:1px solid var(--line);
+  background:#f3f4f6;
+  aspect-ratio: 1 / 1;
+  cursor:pointer;
+
+  transform: scale(.86);
+  transition: transform .15s ease;
+}
+
+.gthumb:hover{ transform: scale(.92); }
+
+/* 중앙(5번째)만 더 축소 */
+.galleryGrid .gthumb:nth-child(5){
+  transform: scale(.78);
+}
+
+.gthumb img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+/* ===== 전체화면 팝업(라이트박스) ===== */
+.imgOverlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.70);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  z-index:80;
+}
+.imgOverlay.show{ display:flex; }
+
+.imgModal{
+  position:relative;
+  width:min(92vw, 520px);
+  max-height: 86vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.imgModal img{
+  width:100%;
+  max-height:86vh;
+  object-fit:contain;
+  border-radius:18px;
+  box-shadow:0 12px 30px rgba(0,0,0,.35);
+}
+.imgClose{
+  position:absolute;
+  top:-14px;
+  right:-14px;
+  width:44px;
+  height:44px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.25);
+  background:rgba(0,0,0,.55);
+  color:#fff;
+  font-size:22px;
+  cursor:pointer;
+}
+
+
+
+    .gthumb img{
+   width:100%;
+   height:100%;
+   object-fit:cover;
+   display:block;
+    }
+
+    /* 중앙축소(가운데 타일이 살짝 더 작게 보이게) */
+    .galleryGrid .gthumb:nth-child(5){
+      transform: scale(.88);
+    }
+
+    /* ===== 전체화면 팝업(라이트박스) ===== */
+    .imgOverlay{
+    position:fixed;
+    inset:0;
+   background:rgba(0,0,0,.70);
+   display:none;
+   align-items:center;
+   justify-content:center;
+   padding:18px;
+   z-index:80;
+    }
+
+    .imgOverlay.show{ display:flex; }
+
+    .imgModal{
+    position:relative;
+    width:min(92vw, 520px);
+   max-height: 86vh;
+   display:flex;
+   align-items:center;
+   justify-content:center;
+    }
+
+   .imgModal img{
+   width:100%;
+   max-height:86vh;
+   object-fit:contain;
+   border-radius:18px;
+   box-shadow:0 12px 30px rgba(0,0,0,.35);
+    }
+
+    /* 닫기 버튼 */
+   .imgClose{
+   position:absolute;
+   top:-14px;
+   right:-14px;
+   width:44px;
+   height:44px;
+   border-radius:999px;
+   border:1px solid rgba(255,255,255,.25);
+   background:rgba(0,0,0,.55);
+   color:#fff;
+   font-size:22px;
+   cursor:pointer;
+    }
+
+  display:flex;
+  gap:12px;
+  margin-top:6px;
+}
+
     .btn{
       flex:1; appearance:none; border:0; cursor:pointer;
       background:var(--btn); color:var(--btnText);
@@ -204,7 +353,33 @@
 }
 
 
-    }
+/* 인사말 배경 이미지 적용 */
+.greetingCard{
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius);
+  border: 1px solid rgba(229,231,235,.9);
+  padding: 18px;
+  background: #ffffff;
+}
+
+.greetingCard::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image: url("assets/background.png"); /* <- 여기 경로만 맞추면 됨 */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: .22;              /* <- 배경 진하기(0~1). 필요하면 조절 */
+  pointer-events:none;
+}
+
+.greetingCard > *{
+  position: relative;
+}
+    
+}
   </style>
 </head>
 
@@ -230,31 +405,23 @@
 
 
     <!-- 인사말 -->
-    <div class="section card center">
+    <div class="section greetingCard center">
       <div class="subtitle" style="font-size:15px; color:var(--text); line-height:1.75;">
       <b>결혼식에 초대합니다</b><br/><br/>
-우리의 이야기는 2016년 코네티컷의 한 교회에서 시작되었습니다.
-가끔 마주치던 인연은 2020년 보스턴에서 다시 이어졌고,
-짜장면과 버블티로 시작한 만남은 커피와 영화, 맛집 탐방으로 자연스럽게 이어졌습니다.
-그 시간을 지나며 우리는 조금씩 서로에게 더 가까워졌습니다.<br/><br/>
-캘리포니아로의 이동을 앞두고 장거리 연애를 망설이던 순간에도,
-“함께 가겠다”는 기은의 진심이 혜경에게 확신이 되었습니다.
-그리고 3년의 시간 끝에 2024년 12월 31일,
-샌프란시스코 Palace of Fine Arts에서 기은이 프러포즈했고
-이제 우리는 새로운 시작을 준비하고 있습니다.<br/><br/>
-모든 것이 시작된 뉴잉글랜드에서 소중한 가족과 친구들과 함께
-우리의 특별한 날을 나누고 싶습니다. 오셔서 따뜻한 축복으로 함께해 주세요.
+서로의 삶에 따뜻한 동반자가 되어<br/>
+사랑과 신뢰로 한 가정을 이루려 합니다.<br/><br/>
+저희의 새로운 시작을 함께 축복해 주세요.<br/><br/>
+문영기·김화자의 차녀 혜경<br/>
+배삼섭·이의숙의 장남 기은
 
       </div>
     </div>
 
     <!-- 연락처 (준비만 / 주석 처리) -->
-    <div class="section card">
+    <div class="section card center">
       <div style="font-weight:800; margin-bottom:10px;">연락처</div>
       <div class="subtitle" style="margin-bottom:10px;">
-        미국 번호를 나중에 넣을 수 있도록 링크를 준비해두었습니다. 아래 주석의 “#”를 지우고 번호를 입력하면 바로 동작합니다.
       </div>
-
       <div class="grid2">
         <div>
           <div style="font-weight:750; margin-bottom:8px;">신부(문혜경)</div>
@@ -283,23 +450,37 @@
     </div>
 
     <!-- 갤러리 (선택) -->
-    <div class="section card">
+     <div class="section card center">
       <div style="font-weight:800; margin-bottom:10px;">갤러리</div>
-      <div class="gallery" aria-label="사진 갤러리">
-        <div class="gitem"><img src="assets/gallery1.jpg" alt="갤러리 1"></div>
-        <div class="gitem"><img src="assets/gallery2.jpg" alt="갤러리 2"></div>
-        <div class="gitem"><img src="assets/gallery3.jpg" alt="갤러리 3"></div>
-      </div>
-      <div class="subtitle">좌우로 스와이프해서 사진을 볼 수 있어요.</div>
+      <div class="galleryGrid" aria-label="사진 갤러리">
+      <div class="gthumb"><img src="assets/gallery1.jpg" alt="갤러리 1"></div>
+      <div class="gthumb"><img src="assets/gallery2.jpg" alt="갤러리 2"></div>
+      <div class="gthumb"><img src="assets/gallery3.jpg" alt="갤러리 3"></div>
+      <div class="gthumb"><img src="assets/gallery4.jpg" alt="갤러리 4"></div>
+      <div class="gthumb"><img src="assets/gallery5.jpg" alt="갤러리 5"></div>
+      <div class="gthumb"><img src="assets/gallery6.jpg" alt="갤러리 6"></div>
+      <div class="gthumb"><img src="assets/gallery7.jpg" alt="갤러리 7"></div>
+      <div class="gthumb"><img src="assets/gallery8.jpg" alt="갤러리 8"></div>
+      <div class="gthumb"><img src="assets/gallery9.jpg" alt="갤러리 9"></div>
+     </div>
+
+      <div class="subtitle">사진을 누르면 크게 볼 수 있어요.</div>
+     </div>
+
+      <!-- 갤러리 전체화면 팝업 -->
+      <div class="imgOverlay" id="imgOverlay" aria-modal="true" role="dialog">
+        <div class="imgModal">
+        <button class="imgClose" id="imgClose" aria-label="닫기">×</button>
+        <img id="imgView" src="" alt="확대 이미지" />
+        </div>
     </div>
 
     <!-- 오시는 길 -->
-    <div class="section card">
+    <div class="section card center">
       <div style="font-weight:800; margin-bottom:10px;">오시는 길</div>
 
       <div class="kv">
         <b id="venueName">Miraval Gardens</b>
-        <span id="venueTel">+1 866-966-3009</span>
       </div>
       <div class="subtitle" id="venueAddr" style="margin-top:6px;">
         838 N Bedford St, East Bridgewater, MA 02333 USA
@@ -308,7 +489,7 @@
       <div class="divider"></div>
 
       <div class="btnrow">
-        <a class="btn" target="_blank" rel="noopener"
+        <a class="btn secondary" target="_blank" rel="noopener"
            href="https://www.google.com/maps/search/?api=1&query=838%20N%20Bedford%20St%2C%20East%20Bridgewater%2C%20MA%2002333%20USA">
           구글 지도
         </a>
@@ -320,13 +501,14 @@
     </div>
 
     <!-- 계좌번호 (팝업 + 복사) -->
-    <div class="section card">
+    <div class="section card center">
       <div style="font-weight:800; margin-bottom:10px;">마음 전하실 곳</div>
 
-      <div class="btnrow">
-        <button class="btn secondary" onclick="openAccountModal('groom')">신랑측</button>
-        <button class="btn" onclick="openAccountModal('bride')">신부측</button>
-      </div>
+<div class="btnrow">
+  <button class="btn secondary" onclick="openAccountModal('bride')">신부측</button>
+  <button class="btn secondary" onclick="openAccountModal('groom')">신랑측</button>
+</div>
+
 
       <div class="subtitle" style="margin-top:10px;">
         버튼을 누르면 팝업이 열립니다. 팝업에서 계좌번호를 복사할 수 있어요.
@@ -364,7 +546,38 @@
   </div>
 
   <script>
-    function toast(msg){
+    // ===== 갤러리 라이트박스 =====
+    const imgOverlay = document.getElementById('imgOverlay');
+    const imgView = document.getElementById('imgView');
+    const imgClose = document.getElementById('imgClose');
+
+    function openImage(src, alt){
+    imgView.src = src;
+    imgView.alt = alt || '확대 이미지';
+    imgOverlay.classList.add('show');
+    }
+
+    function closeImage(){
+      imgOverlay.classList.remove('show');
+      imgView.src = '';
+    }
+
+    imgClose.addEventListener('click', closeImage);
+    imgOverlay.addEventListener('click', (e)=>{
+      // 배경(overlay) 클릭 시 닫기 (이미지 클릭은 유지)
+        if(e.target === imgOverlay) closeImage();
+        });
+
+    window.addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape') closeImage();
+       });
+
+      // 썸네일에 클릭 이벤트 연결
+        document.querySelectorAll('.galleryGrid .gthumb img').forEach((img)=>{
+        img.addEventListener('click', ()=> openImage(img.getAttribute('src'), img.getAttribute('alt')));
+       });
+ 
+     function toast(msg){
       const t = document.getElementById('toast');
       t.textContent = msg;
       t.classList.add('show');
@@ -463,11 +676,11 @@ END:VCALENDAR`;
       modalTitle.textContent = '신부측';
       modalBody.innerHTML = `
         <div class="acctBox">
-          <b>하나은행 • 신부 아버지 문영기</b>
+          <b>부) 문영기 • 하나은행</b>
           <div class="mono" id="acct1">1468-9147-8640-07</div>
         </div>
         <div class="acctBox">
-          <b>KB국민은행 • 신부 어머니 김화자</b>
+          <b>모) 김화자 • 국민은행</b>
           <div class="mono" id="acct2">8102-1048-1521</div>
         </div>
         <div class="subtitle" style="margin-top:6px;">
