@@ -23,6 +23,16 @@
       --radius:18px;
       --max:440px;
     }
+    
+      @font-face{
+      font-family:'MomFont';
+      src:url('assets/fonts/mom.ttf') format('truetype');
+      font-weight:normal;
+      font-style:normal;
+      font-display:swap;
+}
+
+
     *{ box-sizing:border-box; }
     body{
       margin:0; font-family: system-ui, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
@@ -325,6 +335,31 @@
 .greetingCard > *{
   position: relative;
 }
+
+/* ===== 스크롤 등장 애니메이션 ===== */
+.reveal{
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity .55s ease, transform .55s ease;
+  will-change: opacity, transform;
+}
+
+.reveal.show{
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 접근성: 모션 줄이기 설정한 사용자는 애니메이션 최소화 */
+@media (prefers-reduced-motion: reduce){
+  .reveal{ transition:none; transform:none; opacity:1; }
+
+  .inviteText strong{
+  font-weight:700;
+}
+
+}
+
+
   </style>
 </head>
 
@@ -353,9 +388,11 @@
     <div class="section greetingCard center">
       <div class="subtitle" style="font-size:15px; color:var(--text); line-height:1.75;">
       <b>결혼식에 초대합니다</b><br/><br/>
-서로의 삶에 따뜻한 동반자가 되어<br/>
-사랑과 신뢰로 한 가정을 이루려 합니다.<br/><br/>
-저희의 새로운 시작을 함께 축복해 주세요.<br/><br/>
+<p>
+    서로의 삶에 따뜻한 동반자가 되어<br>
+    사랑과 신뢰로 한 가정을 이루려 합니다.<br><br>
+    저희의 새로운 시작을 함께 축복해 주세요.<br><br>
+  </p>
 문영기·김화자의 차녀 혜경<br/>
 배삼섭·이의숙의 장남 기은
 
@@ -566,19 +603,19 @@
       const dtEnd   = '20260327T190000';
 
       const ics =
-`BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//wedding-card//KO
-BEGIN:VEVENT
-UID:${Date.now()}@wedding-card
-DTSTAMP:${dtStart}Z
-DTSTART:${dtStart}
-DTEND:${dtEnd}
-SUMMARY:${title}
-LOCATION:${locationText}
-DESCRIPTION:${description}
-END:VEVENT
-END:VCALENDAR`;
+      `BEGIN:VCALENDAR
+      VERSION:2.0
+      PRODID:-//wedding-card//KO
+      BEGIN:VEVENT
+      UID:${Date.now()}@wedding-card
+      DTSTAMP:${dtStart}Z
+      DTSTART:${dtStart}
+      DTEND:${dtEnd}
+      SUMMARY:${title}
+      LOCATION:${locationText}
+      DESCRIPTION:${description}
+      END:VEVENT
+      END:VCALENDAR`;
 
       const blob = new Blob([ics], {type: 'text/calendar;charset=utf-8'});
       const a = document.createElement('a');
@@ -640,6 +677,38 @@ END:VCALENDAR`;
 
       overlay.classList.add('show');
     }
+    // ===== 스크롤 시 섹션 부드럽게 등장 =====
+(function(){
+  const sections = Array.from(document.querySelectorAll('.section'));
+
+  // hero(커버)나 stickyBar/모달 같은 UI는 제외하고 싶으면 조건 추가 가능
+  sections.forEach(sec => {
+    // 이미 show면 건너뜀
+    if(!sec.classList.contains('reveal')) sec.classList.add('reveal');
+  });
+
+  // IntersectionObserver 지원 안 하면 그냥 다 보여주기
+  if(!('IntersectionObserver' in window)){
+    sections.forEach(sec => sec.classList.add('show'));
+    return;
+  }
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('show');
+        io.unobserve(entry.target); // 한 번만 나타나면 끝
+      }
+    });
+  }, {
+    root: null,
+    threshold: 0.12,
+    rootMargin: '0px 0px -8% 0px'
+  });
+
+  sections.forEach(sec => io.observe(sec));
+})();
+
   </script>
 </body>
 </html>
