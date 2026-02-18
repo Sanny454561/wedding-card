@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>모바일 청첩장</title>
+
+  <!-- Open Graph (카톡/메신저 공유 카드) -->
+  <meta property="og:title" content="문혜경 ♥ 배기은 결혼식에 초대합니다" />
+  <meta property="og:description" content="2026.03.27.(금) 17:00 | Miraval Gardens" />
+  <meta property="og:image" content="assets/cover.jpg" />
+
+  <style>
+    :root{
+      --bg:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --card:#f9fafb;
+      --btn:#111827;
+      --btnText:#ffffff;
+      --radius:18px;
+      --max:440px;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0; font-family: system-ui, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+      background:var(--bg); color:var(--text);
+      display:flex; justify-content:center;
+    }
+    .wrap{ width:min(100%, var(--max)); padding:14px 14px 96px; }
+    .section{ margin:18px 0; }
+    .center{ text-align:center; }
+    .hero{
+      border-radius:22px; overflow:hidden; border:1px solid var(--line);
+      background:#f3f4f6;
+    }
+    .hero img{ width:100%; display:block; }
+    .names{
+      display:flex; justify-content:center; gap:10px; align-items:center;
+      margin-top:10px;
+      font-size:22px; font-weight:750; letter-spacing:-0.02em;
+    }
+    .heart{ font-size:18px; opacity:.85; }
+    .title{ font-size:18px; font-weight:750; margin:10px 0 4px; }
+    .subtitle{ color:var(--muted); font-size:14px; line-height:1.5; }
+    .card{
+      background:var(--card); border:1px solid var(--line);
+      border-radius:var(--radius); padding:16px;
+    }
+    .divider{ height:1px; background:var(--line); margin:14px 0; }
+    .btnrow{ display:flex; gap:10px; }
+    .btn{
+      flex:1; appearance:none; border:0; cursor:pointer;
+      background:var(--btn); color:var(--btnText);
+      padding:12px 12px; border-radius:14px;
+      font-size:14px; font-weight:700;
+      display:flex; align-items:center; justify-content:center; gap:8px;
+      text-decoration:none;
+    }
+    .btn.secondary{
+      background:#fff; color:var(--text);
+      border:1px solid var(--line);
+    }
+    .btn:disabled{ opacity:.55; cursor:not-allowed; }
+    .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .kv{ display:flex; justify-content:space-between; gap:14px; }
+    .kv b{ font-weight:750; }
+    .kv span{ color:var(--muted); text-align:right; }
+    details{ border:1px solid var(--line); border-radius:16px; overflow:hidden; background:#fff; }
+    summary{
+      list-style:none; cursor:pointer; padding:12px 14px;
+      font-weight:750;
+    }
+    summary::-webkit-details-marker{ display:none; }
+    .detailBody{ padding:12px 14px; border-top:1px solid var(--line); }
+    .gallery{
+      display:flex; gap:10px; overflow:auto; scroll-snap-type:x mandatory;
+      padding-bottom:6px;
+    }
+    .gitem{
+      flex:0 0 78%;
+      scroll-snap-align:center;
+      border-radius:18px; overflow:hidden; border:1px solid var(--line);
+      background:#f3f4f6;
+    }
+    .gitem img{ width:100%; display:block; }
+    .toast{
+      position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
+      background:#111827; color:#fff; padding:10px 12px;
+      border-radius:999px; font-size:13px; opacity:0; pointer-events:none;
+      transition:opacity .2s ease;
+      z-index:50;
+    }
+    .toast.show{ opacity:1; }
+    .stickyBar{
+      position:fixed; left:0; right:0; bottom:0;
+      background:rgba(255,255,255,.92);
+      backdrop-filter:saturate(180%) blur(12px);
+      border-top:1px solid var(--line);
+      display:flex; justify-content:center;
+      z-index:40;
+    }
+    .stickyInner{
+      width:min(100%, var(--max));
+      padding:10px 14px;
+      display:flex; gap:10px;
+    }
+
+    /* Modal */
+    .modalOverlay{
+      position:fixed; inset:0;
+      background:rgba(17,24,39,.55);
+      display:none; align-items:center; justify-content:center;
+      padding:18px;
+      z-index:60;
+    }
+    .modalOverlay.show{ display:flex; }
+    .modal{
+      width:min(100%, 420px);
+      background:#fff;
+      border-radius:20px;
+      border:1px solid var(--line);
+      overflow:hidden;
+      box-shadow:0 12px 30px rgba(0,0,0,.18);
+    }
+    .modalHeader{
+      padding:14px 16px;
+      border-bottom:1px solid var(--line);
+      display:flex; justify-content:space-between; align-items:center;
+      gap:10px;
+    }
+    .modalHeader b{ font-size:15px; }
+    .xbtn{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:12px;
+      width:40px; height:40px;
+      cursor:pointer;
+      font-size:18px;
+    }
+    .modalBody{ padding:14px 16px; }
+    .acctBox{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:12px 12px;
+      background:#f9fafb;
+      margin-bottom:10px;
+    }
+    .acctBox b{ display:block; margin-bottom:4px; }
+    .acctBox .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+    .modalFooter{
+      padding:14px 16px;
+      border-top:1px solid var(--line);
+      display:flex;
+      gap:10px;
+    }
+      /* 커버 오버레이 */
+.hero{ position:relative; }
+.hero img{ width:100%; display:block; }
+
+.hero .overlay{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  padding:0 14px 14px; /* 좌우 + 하단 여백(떠있는 느낌) */
+  pointer-events:none; /* 오버레이가 탭/스크롤 방해하지 않게 */
+}
+
+/* 반투명 흰 상자 */
+.hero .overlay .box{
+  width:100%;
+  background:rgba(255,255,255,.30);  /* 반투명 흰색 */
+  border:1px solid rgba(229,231,235,.9);
+  border-radius:18px;
+  padding:12px 12px;
+  text-align:center;                  /* 가운데 정렬 */
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  box-shadow: 0 10px 24px rgba(0,0,0,.18);
+  pointer-events:auto;
+}
+
+.hero .overlay .names{
+  margin:0 0 6px;
+  font-size:20px;
+  font-weight:850;
+  letter-spacing:-0.02em;
+  color:#111827;
+}
+
+.hero .overlay .meta{
+  font-size:13px;
+  line-height:1.55;
+  color:#374151;
+}
+
+@media (max-width: 360px){
+  .hero .overlay .names{ font-size:18px; }
+  .hero .overlay .meta{ font-size:12.5px; }
+}
+
+
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <!-- 커버 -->
+    <div class="section hero">
+  <img src="assets/cover.jpg" alt="커버 이미지" />
+  <div class="overlay">
+    <div class="box">
+      <div class="names">
+        문 혜 경 <span class="heart">♥</span> 배 기 은
+      </div>
+      <div class="meta">
+        2026.03.27.(금) 17:00<br/>
+        Miraval Gardens<br/>
+        East Bridgewater, MA 02333 USA<br/>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <!-- 인사말 -->
+    <div class="section card center">
+      <div class="subtitle" style="font-size:15px; color:var(--text); line-height:1.75;">
+      <b>결혼식에 초대합니다</b><br/><br/>
+우리의 이야기는 2016년 코네티컷의 한 교회에서 시작되었습니다.
+가끔 마주치던 인연은 2020년 보스턴에서 다시 이어졌고,
+짜장면과 버블티로 시작한 만남은 커피와 영화, 맛집 탐방으로 자연스럽게 이어졌습니다.
+그 시간을 지나며 우리는 조금씩 서로에게 더 가까워졌습니다.<br/><br/>
+캘리포니아로의 이동을 앞두고 장거리 연애를 망설이던 순간에도,
+“함께 가겠다”는 기은의 진심이 혜경에게 확신이 되었습니다.
+그리고 3년의 시간 끝에 2024년 12월 31일,
+샌프란시스코 Palace of Fine Arts에서 기은이 프러포즈했고
+이제 우리는 새로운 시작을 준비하고 있습니다.<br/><br/>
+모든 것이 시작된 뉴잉글랜드에서 소중한 가족과 친구들과 함께
+우리의 특별한 날을 나누고 싶습니다. 오셔서 따뜻한 축복으로 함께해 주세요.
+
+      </div>
+    </div>
+
+    <!-- 연락처 (준비만 / 주석 처리) -->
+    <div class="section card">
+      <div style="font-weight:800; margin-bottom:10px;">연락처</div>
+      <div class="subtitle" style="margin-bottom:10px;">
+        미국 번호를 나중에 넣을 수 있도록 링크를 준비해두었습니다. 아래 주석의 “#”를 지우고 번호를 입력하면 바로 동작합니다.
+      </div>
+
+      <div class="grid2">
+        <div>
+          <div style="font-weight:750; margin-bottom:8px;">신부(문혜경)</div>
+          <div class="btnrow">
+            <!-- 준비만 해둠: 아래 #을 지우고 번호를 넣으면 바로 동작 -->
+            <!-- <a class="btn" href="tel:+1XXXXXXXXXX">전화</a> -->
+            <!-- <a class="btn secondary" href="sms:+1XXXXXXXXXX">문자</a> -->
+
+            <button class="btn" disabled>전화</button>
+            <button class="btn secondary" disabled>문자</button>
+          </div>
+        </div>
+
+        <div>
+          <div style="font-weight:750; margin-bottom:8px;">신랑(배기은)</div>
+          <div class="btnrow">
+            <!-- 준비만 해둠: 아래 #을 지우고 번호를 넣으면 바로 동작 -->
+            <!-- <a class="btn" href="tel:+1XXXXXXXXXX">전화</a> -->
+            <!-- <a class="btn secondary" href="sms:+1XXXXXXXXXX">문자</a> -->
+
+            <button class="btn" disabled>전화</button>
+            <button class="btn secondary" disabled>문자</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 갤러리 (선택) -->
+    <div class="section card">
+      <div style="font-weight:800; margin-bottom:10px;">갤러리</div>
+      <div class="gallery" aria-label="사진 갤러리">
+        <div class="gitem"><img src="assets/gallery1.jpg" alt="갤러리 1"></div>
+        <div class="gitem"><img src="assets/gallery2.jpg" alt="갤러리 2"></div>
+        <div class="gitem"><img src="assets/gallery3.jpg" alt="갤러리 3"></div>
+      </div>
+      <div class="subtitle">좌우로 스와이프해서 사진을 볼 수 있어요.</div>
+    </div>
+
+    <!-- 오시는 길 -->
+    <div class="section card">
+      <div style="font-weight:800; margin-bottom:10px;">오시는 길</div>
+
+      <div class="kv">
+        <b id="venueName">Miraval Gardens</b>
+        <span id="venueTel">+1 866-966-3009</span>
+      </div>
+      <div class="subtitle" id="venueAddr" style="margin-top:6px;">
+        838 N Bedford St, East Bridgewater, MA 02333 USA
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="btnrow">
+        <a class="btn" target="_blank" rel="noopener"
+           href="https://www.google.com/maps/search/?api=1&query=838%20N%20Bedford%20St%2C%20East%20Bridgewater%2C%20MA%2002333%20USA">
+          구글 지도
+        </a>
+        <a class="btn secondary" target="_blank" rel="noopener"
+           href="http://maps.apple.com/?q=838%20N%20Bedford%20St%2C%20East%20Bridgewater%2C%20MA%2002333%20USA">
+          애플 지도
+        </a>
+      </div>
+    </div>
+
+    <!-- 계좌번호 (팝업 + 복사) -->
+    <div class="section card">
+      <div style="font-weight:800; margin-bottom:10px;">마음 전하실 곳</div>
+
+      <div class="btnrow">
+        <button class="btn secondary" onclick="openAccountModal('groom')">신랑측</button>
+        <button class="btn" onclick="openAccountModal('bride')">신부측</button>
+      </div>
+
+      <div class="subtitle" style="margin-top:10px;">
+        버튼을 누르면 팝업이 열립니다. 팝업에서 계좌번호를 복사할 수 있어요.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 하단 고정 액션 -->
+  <div class="stickyBar">
+    <div class="stickyInner">
+      <button class="btn secondary" onclick="addToCalendar()">일정 추가</button>
+      <button class="btn secondary" onclick="shareLink()">링크 복사</button>
+      <button class="btn" onclick="scrollToTop()">맨 위로</button>
+    </div>
+  </div>
+
+  <!-- 토스트 -->
+  <div class="toast" id="toast">복사되었습니다</div>
+
+  <!-- 팝업(모달) -->
+  <div class="modalOverlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <div class="modalHeader">
+        <b id="modalTitle">계좌 안내</b>
+        <button class="xbtn" onclick="closeModal()" aria-label="닫기">×</button>
+      </div>
+
+      <div class="modalBody" id="modalBody"></div>
+
+      <div class="modalFooter" id="modalFooter">
+        <!-- footer buttons injected -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toast(msg){
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(()=>t.classList.remove('show'), 1300);
+    }
+
+    function scrollToTop(){
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+
+    async function copyRawText(text){
+      const val = (text || '').trim();
+      if(!val) return toast('복사할 내용이 없습니다');
+      try{
+        await navigator.clipboard.writeText(val);
+        toast('복사되었습니다');
+      }catch(e){
+        const ta = document.createElement('textarea');
+        ta.value = val;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+        toast('복사되었습니다');
+      }
+    }
+
+    async function shareLink(){
+      const url = location.href;
+      await copyRawText(url);
+      toast('링크가 복사되었습니다');
+    }
+
+    // 캘린더: 간단 ICS 다운로드
+    function addToCalendar(){
+      const title = '문혜경 ♥ 배기은 결혼식';
+      const locationText = 'Miraval Gardens, 838 N Bedford St, East Bridgewater, MA 02333 USA';
+      const description = '모바일 청첩장: ' + location.href;
+
+      // 로컬 시간 기준(기기/앱별 해석 차이 있을 수 있음)
+      const dtStart = '20260327T170000';
+      const dtEnd   = '20260327T190000';
+
+      const ics =
+`BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//wedding-card//KO
+BEGIN:VEVENT
+UID:${Date.now()}@wedding-card
+DTSTAMP:${dtStart}Z
+DTSTART:${dtStart}
+DTEND:${dtEnd}
+SUMMARY:${title}
+LOCATION:${locationText}
+DESCRIPTION:${description}
+END:VEVENT
+END:VCALENDAR`;
+
+      const blob = new Blob([ics], {type: 'text/calendar;charset=utf-8'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'wedding.ics';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      toast('캘린더 파일을 다운로드했습니다');
+    }
+
+    // 모달 로직
+    const overlay = document.getElementById('modalOverlay');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    const modalFooter = document.getElementById('modalFooter');
+
+    function closeModal(){
+      overlay.classList.remove('show');
+      modalBody.innerHTML = '';
+      modalFooter.innerHTML = '';
+    }
+    overlay.addEventListener('click', (e)=>{ if(e.target === overlay) closeModal(); });
+    window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeModal(); });
+
+    function openAccountModal(side){
+      if(side === 'groom'){
+        // 요구사항: 신랑측은 팝업은 뜨되 아무 정보도 표시하지 않음(닫기만)
+        modalTitle.textContent = '신랑측';
+        modalBody.innerHTML = `<div class="subtitle" style="color:var(--muted);">
+          (추후 입력 예정)
+        </div>`;
+        modalFooter.innerHTML = `<button class="btn secondary" onclick="closeModal()">닫기</button>`;
+        overlay.classList.add('show');
+        return;
+      }
+
+      // 신부측: 계좌 표시 + 복사 버튼
+      modalTitle.textContent = '신부측';
+      modalBody.innerHTML = `
+        <div class="acctBox">
+          <b>하나은행 • 신부 아버지 문영기</b>
+          <div class="mono" id="acct1">1468-9147-8640-07</div>
+        </div>
+        <div class="acctBox">
+          <b>KB국민은행 • 신부 어머니 김화자</b>
+          <div class="mono" id="acct2">8102-1048-1521</div>
+        </div>
+        <div class="subtitle" style="margin-top:6px;">
+          아래 버튼을 눌러 계좌번호를 복사할 수 있습니다.
+        </div>
+      `;
+
+      modalFooter.innerHTML = `
+        <button class="btn secondary" onclick="copyRawText(document.getElementById('acct1').textContent)">1번 복사</button>
+        <button class="btn secondary" onclick="copyRawText(document.getElementById('acct2').textContent)">2번 복사</button>
+        <button class="btn" onclick="closeModal()">닫기</button>
+      `;
+
+      overlay.classList.add('show');
+    }
+  </script>
+</body>
+</html>
