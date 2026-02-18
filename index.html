@@ -353,14 +353,34 @@
 @media (prefers-reduced-motion: reduce){
   .reveal{ transition:none; transform:none; opacity:1; }
 
-  .inviteText strong{
+  }
+
+
+  
+/* ===== 인사말 전용 폰트 적용 ===== */
+.inviteText{
+  font-family:'MomFont', sans-serif;
+  text-align:center;
+  font-size:30px;
+  line-height:2.0;
+  letter-spacing:0.02em;
+}
+
+
+.inviteText strong, .inviteText b{
   font-weight:700;
 }
 
+/* 인사말 제목만 크게 */
+.inviteText strong:first-child{
+  font-size:36px;
+  display:block;
+  margin-bottom:12px;
+  line-height:1.4;
 }
 
 
-  </style>
+</style>
 </head>
 
 <body>
@@ -386,11 +406,13 @@
 
     <!-- 인사말 -->
     <div class="section greetingCard center">
-      <div class="subtitle" style="font-size:15px; color:var(--text); line-height:1.75;">
-      <b>결혼식에 초대합니다</b><br/><br/>
+      <div class="subtitle inviteText"
+     style="color:var(--text);">
+
+      <strong>결혼식에 초대합니다</strong><br/>
 <p>
     서로의 삶에 따뜻한 동반자가 되어<br>
-    사랑과 신뢰로 한 가정을 이루려 합니다.<br><br>
+    사랑과 신뢰로 한 가정을 이루려 합니다.<br>
     저희의 새로운 시작을 함께 축복해 주세요.<br><br>
   </p>
 문영기·김화자의 차녀 혜경<br/>
@@ -407,13 +429,10 @@
       <div class="grid2">
         <div>
           <div style="font-weight:750; margin-bottom:8px;">신부(문혜경)</div>
-          <div class="btnrow">
-            <!-- <a class="btn" href="tel:+1XXXXXXXXXX">전화</a> -->
-            <!-- <a class="btn secondary" href="sms:+1XXXXXXXXXX">문자</a> -->
+        <div class="btnrow">
+          <button class="btn" onclick="openContactModal('bride')">보기</button>
+        </div>
 
-            <button class="btn" disabled>전화</button>
-            <button class="btn secondary" disabled>문자</button>
-          </div>
         </div>
 
         <div>
@@ -632,6 +651,28 @@
     const modalTitle = document.getElementById('modalTitle');
     const modalBody = document.getElementById('modalBody');
     const modalFooter = document.getElementById('modalFooter');
+    // 연락처 팝업(전화/문자 기능 없이 정보만 표시)
+function openContactModal(side){
+  if(side === 'groom'){
+    modalTitle.textContent = '신랑측 연락처';
+    modalBody.innerHTML = `<div class="subtitle" style="color:var(--muted);">(추후 입력 예정)</div>`;
+    modalFooter.innerHTML = `<button class="btn" onclick="closeModal()">닫기</button>`;
+    overlay.classList.add('show');
+    return;
+  }
+
+  modalTitle.textContent = '신부측 연락처';
+  modalBody.innerHTML = `
+    <div class="acctBox">
+      <b>신부 문혜경</b>
+      <div class="mono">아버지 문영기 : 010-4721-9793</div>
+      <div class="mono">어머니 김화자 : 010-4828-0315</div>
+    </div>
+  `;
+  modalFooter.innerHTML = `<button class="btn" onclick="closeModal()">닫기</button>`;
+  overlay.classList.add('show');
+}
+
 
     function closeModal(){
       overlay.classList.remove('show');
